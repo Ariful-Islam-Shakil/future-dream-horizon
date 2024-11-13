@@ -38,7 +38,7 @@
             <tr>
                 <th>Transaction ID</th>
                 <th>User ID</th>
-                <th>Date and Time</th>
+                <th>Date (yy-mm-dd)</th>
                 <th>Month</th>
                 <th>Taka</th>
             </tr>
@@ -78,10 +78,10 @@
                             cell1.innerText = data[1];
                             
                             const cell2 = row.insertCell();
-                            cell2.innerText = data[2];
+                            cell2.innerText = data[2].slice(0,10);
                             
                             const cell3 = row.insertCell();
-                            cell3.innerText = data[3];
+                            cell3.innerText = data[3]+ '-'+data[5];
                             
                             const cell4 = row.insertCell();
                             cell4.innerText = data[4];
