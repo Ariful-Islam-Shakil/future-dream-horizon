@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>User Dashboard</title>
+ 
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <!-- Left Side: Logo -->
+        <img src="logo.png" alt="Logo" class="logo">
+        
+        <!-- Center: Organization Name -->
+        <div class="navbar-center">Future Dream Horizon</div>
+        
+        <!-- Right Side: Links -->
+        <div class="navbar-links">
+            <a href="index.html">Home</a>
+            <a href="allTransactions.html">All Transactions</a>
+            <a href="#">All Income</a>
+            <a href="#">All Expenses</a>
+        </div>
+    </div>
+
+    <!-- Main content -->
+
+    <!-- Transactions Section -->
+    
+        <!-- Main Content Container -->
+        <div class="container"> 
+    
+         <div id="user_Info" style="display: flex;justify-content: space-between; font-weight: bold;">
+            <table id="basic-info">  <!-- User Information through Javascript --> </table>
+            <span id="user-photo" style="padding-right: 30px;"> <!-- User Photo through Javascript -->         </span>
+
+         </div>
+    
+    
+
+            <!-- Total Taka Display -->
+        <h1 class="due-paid">
+            <span id="totalDue">Total Dues : 0.0</span> <br>
+            <span id="totalTaka"></span>
+        </h1>
+
+        <table id="transactionTable">
+            <tr>
+                <th>Transaction ID</th>
+                <th>Date and Time</th>
+                <th>Month</th>
+                <th>Taka</th>
+            </tr>
+        </table>
+    </div> 
+
+
+
+ 
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2024 Future Dream Horizon. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Get the userID from the URL parameters
+        const userID = new URLSearchParams(window.location.search).get('userID');
+        let total = 0;
+
+        // Fetch transactions from the Google Apps Script
+        fetch(`https://script.google.com/macros/s/AKfycby3kSQ_tKv6stczdHltUHM-xDyD4SBaogAJ2DrZ7om7KJ7oRjTWc86bV3VTWyK5bIafeg/exec?getTransactions`)
+            .then(response => response.json())
+            .then(transactions => {
+                const table = document.getElementById('transactionTable');
+
+                // Loop through each transaction and filter by userID
+                transactions.forEach(trxn => {
+                    // Assuming userID is in the second column (index 1)
+                    if (trxn[1] == userID) {
+                        total += parseFloat(trxn[4]) || 0; // Safely parse trxn[4] as a number
+                        data = trxn;
+                        const row = table.insertRow();
+                        
+                            const cell1 = row.insertCell();
+                            cell1.innerText = data[0];
+                            
+                            const cell2 = row.insertCell();
+                            cell2.innerText = data[2];
+                            
+                            const cell3 = row.insertCell();
+                            cell3.innerText = data[3];
+                            
+                            const cell4 = row.insertCell();
+                            cell4.innerText = data[4];
+                        
+                    }
+                });
+
+                // Display total after the loop completes
+                document.getElementById('totalTaka').innerText = "Total Paid: " + total.toFixed(2);
+                //document.getElementById('userName').innerText = userID;
+            })
+            .catch(error => console.error("Error fetching or processing data:", error));
+
+        //Fetching user information
+        fetch('https://script.google.com/macros/s/AKfycby3kSQ_tKv6stczdHltUHM-xDyD4SBaogAJ2DrZ7om7KJ7oRjTWc86bV3VTWyK5bIafeg/exec?getUsers')
+            .then(response => {
+                // Check if the response status is OK (200)
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Data received:", data); // Log the response data
+    
+                if (!Array.isArray(data)) {
+                    throw new Error("Expected an array but received something else.");
+                }
+    
+                const table = document.getElementById('userTable');
+                data.forEach(user => {
+                    if(userID == user[0]){
+                    const name = user[1];
+                    const father = user[2];
+                    const phone = user[3]
+                    const email = user[4]
+                    const photo = user[5]
+                    document.getElementById('basic-info').innerHTML = 
+                    `
+                        <tr><th>Name</th> <td>: ${name}</td></tr>
+                        <tr><th>Father's Name </th> <td>: ${father}</td></tr>
+                        <tr><th>Email </th> <td>: ${email}</td></tr>
+                        <tr><th>Phone</th> <td> ${phone}</td></tr>
+                    `;
+                        
+                    document.getElementById('user-photo').innerHTML = 
+                    `<img src="${photo}" alt="User Image" style="width:100px; height:150px; align:center;">`;
+
+
+                    return;
+                }
+                });
+            })
+            .catch(error => console.error("Error fetching or processing data:", error));
+ 
+            
+    </script>
+
+
+
+</body>
+</html>

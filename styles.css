@@ -1,0 +1,181 @@
+
+/* General body style */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Navbar styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    padding: 10px 20px;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Logo styling */
+.logo {
+    width: 50px;
+    height: auto;
+}
+
+/* Navbar Center */
+.navbar-center {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+}
+
+/* Navbar links styling */
+.navbar-links {
+    display: flex;
+    gap: 20px;
+}
+
+.navbar-links a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+.navbar-links a:hover {
+    color: #f0a500;
+}
+
+
+
+#totalTaka{
+    color: blue;
+    text-align: right;
+    padding-right: 20px;
+    width: 48%;
+}
+#totalDue{
+    color:tomato;
+    text-align: left;
+    padding-left: 20px; 
+    width: 48%; 
+}
+.due-paid{
+    display: flex;
+}
+
+ 
+
+#basic-info tr th{
+    all: unset; 
+}
+#basic-info tr td{
+    all: unset;
+    color: green;
+}
+
+/* Responsive Design for small screens */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        position: relative;
+    }
+
+    .navbar-center {
+        font-size: 20px;
+        margin: 10px 0;
+    }
+
+    .navbar-links {
+        flex-direction: column;
+        width: 100%;
+        text-align: left;
+        padding: 10px 0;
+    }
+
+    .navbar-links a {
+        font-size: 16px;
+        padding: 8px 20px;
+        width: 100%;
+        text-align: left;
+    }
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    margin-top: 30px;
+    border-collapse: collapse;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f9f9f9;
+    font-size: 18px;
+}
+
+td {
+    background-color: #fff;
+    font-size: 16px;
+}
+
+/* Hover effect for table rows */
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Button Styling */
+button {
+    margin-left: 10px;
+    padding: 8px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Header styling */
+h1 {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 30px;
+    color: #333;
+}
+
+/* Page container */
+.container {
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Footer style */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    color: white;
+    margin-top: 30px;
+}
