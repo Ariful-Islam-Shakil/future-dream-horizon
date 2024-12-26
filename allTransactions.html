@@ -31,7 +31,7 @@
         <h1 style="color:green; text-align: center;">Detailled Information of All collections</h1>
         
         <h1 class="due-paid">
-            <span id="totalDue">Total Dues : 0.0</span> <br>
+            <span id="totalDue"> </span> <br>
             <span id="totalTaka"></span>
         </h1>
         <table id="transactionTable">
@@ -57,9 +57,10 @@
         // Get the userID from the URL parameters
         // const userID = new URLSearchParams(window.location.search).get('userID');
         let total1 = 0;
+        let allPayable = 0;
 
         // Fetch transactions from the Google Apps Script
-        fetch(`https://script.google.com/macros/s/AKfycby3kSQ_tKv6stczdHltUHM-xDyD4SBaogAJ2DrZ7om7KJ7oRjTWc86bV3VTWyK5bIafeg/exec?getTransactions`)
+        fetch(`https://script.google.com/macros/s/AKfycbzMjOW3h4Zb8sl4I7AR3gb-jijF2qWqQYe0AdO74Uo_3Q5UOb4GdNiJ7nq-2EjQ46aV4Q/exec?getTransactions`)
             .then(response => response.json())
             .then(transactions => {
                 const table = document.getElementById('transactionTable');
@@ -69,6 +70,7 @@
                     // Assuming userID is in the second column (index 1)
                     if (trxn[1]) {
                         total1 += parseFloat(trxn[4]) || 0; // Safely parse trxn[4] as a number
+                        //allPayable = -1 * total1;
                         data = trxn;
                         const row = table.insertRow();
                             const cell0 = row.insertCell();
@@ -94,9 +96,37 @@
                 });
 
                 // Display total after the loop completes
-                document.getElementById('totalTaka').innerText = "Total Collection : " + total1.toFixed(2);
+                const TTK = total1;
+                document.getElementById('totalTaka').innerText = "Total Collection : " + TTK.toFixed(2);
+                callPayableAPI(total1);
             })
             .catch(error => console.error("Error fetching or processing data:", error));
+
+
+
+        //Fetch Payable amount
+        function callPayableAPI(total1){
+
+        
+            fetch('https://script.google.com/macros/s/AKfycbzMjOW3h4Zb8sl4I7AR3gb-jijF2qWqQYe0AdO74Uo_3Q5UOb4GdNiJ7nq-2EjQ46aV4Q/exec?getPayable')
+                .then(response =>{
+                    if(!response.ok){
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    
+                    data.forEach(paybleAmount => {
+                        allPayable += parseFloat(paybleAmount[2]) || 0;
+                    });
+                    
+                    const TPBL = (allPayable * 10) - total1;
+                    document.getElementById('totalDue').innerText = "Total Due: " + TPBL.toFixed(2);
+                    
+                })
+                .catch(error => console.error("Error fetching or processing data:", error));
+        }
     </script>
 
 </body>
