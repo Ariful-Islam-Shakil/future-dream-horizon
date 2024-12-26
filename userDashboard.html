@@ -32,29 +32,29 @@
         <!-- Main Content Container -->
         <div class="container"> 
     
-         <div id="user_Info" style="display: flex;justify-content: space-between; font-weight: bold;">
-            <table id="basic-info">  <!-- User Information through Javascript --> </table>
-            <span id="user-photo" style="padding-right: 30px;"> <!-- User Photo through Javascript -->         </span>
+            <div id="user_Info" style="display: flex;justify-content: space-between; font-weight: bold;">
+                <table id="basic-info">  <!-- User Information through Javascript --> </table>
+                <span id="user-photo" style="padding-right: 30px;"> <!-- User Photo through Javascript -->         </span>
 
-         </div>
+            </div>
     
     
 
-            <!-- Total Taka Display -->
-        <h1 class="due-paid">
-            <span id="totalDue">Total Dues : 0.0</span> <br>
-            <span id="totalTaka"></span>
-        </h1>
+                <!-- Total Taka Display -->
+            <h1 class="due-paid">
+                <span id="totalDue"> </span> <br>
+                <span id="totalTaka"> </span>
+            </h1>
 
-        <table id="transactionTable">
-            <tr>
-                <th>Transaction ID</th>
-                <th>Date and Time</th>
-                <th>Month</th>
-                <th>Taka</th>
-            </tr>
-        </table>
-    </div> 
+            <table id="transactionTable">
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Date and Time</th>
+                    <th>Month</th>
+                    <th>Taka</th>
+                </tr>
+            </table>
+        </div> 
 
 
 
@@ -64,10 +64,13 @@
         <p>&copy; 2024 Future Dream Horizon. All rights reserved.</p>
     </footer>
 
+
+
     <script>
         // Get the userID from the URL parameters
         const userID = new URLSearchParams(window.location.search).get('userID');
         let total = 0;
+        let totalPayable = 0;
 
         // Fetch transactions from the Google Apps Script
         fetch(`https://script.google.com/macros/s/AKfycby3kSQ_tKv6stczdHltUHM-xDyD4SBaogAJ2DrZ7om7KJ7oRjTWc86bV3VTWyK5bIafeg/exec?getTransactions`)
@@ -76,10 +79,12 @@
                 const table = document.getElementById('transactionTable');
 
                 // Loop through each transaction and filter by userID
+                
                 transactions.forEach(trxn => {
                     // Assuming userID is in the second column (index 1)
                     if (trxn[1] == userID) {
                         total += parseFloat(trxn[4]) || 0; // Safely parse trxn[4] as a number
+                         
                         data = trxn;
                         const row = table.insertRow();
                         
@@ -96,16 +101,41 @@
                             cell4.innerText = data[4];
                         
                     }
-                });
-
-                // Display total after the loop completes
-                document.getElementById('totalTaka').innerText = "Total Paid: " + total.toFixed(2);
-                //document.getElementById('userName').innerText = userID;
+                    // const totalTaka = total;
+                }
+            );
+            document.getElementById('totalTaka').innerText = "Total Paid: " + total.toFixed(2);
+            callPayableAPI1(total);
+ 
             })
             .catch(error => console.error("Error fetching or processing data:", error));
 
+
+        function callPayableAPI1(total){
+
+            
+        //Fetch Payable amount
+        fetch('https://script.google.com/macros/s/AKfycbzMjOW3h4Zb8sl4I7AR3gb-jijF2qWqQYe0AdO74Uo_3Q5UOb4GdNiJ7nq-2EjQ46aV4Q/exec?getPayable')
+            .then(response =>{
+                if(!response.ok){
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                
+                data.forEach(paybleAmount => {
+                    totalPayable += parseFloat(paybleAmount[2]) || 0;
+                });
+                const TPBL = totalPayable - total;
+                document.getElementById('totalDue').innerText = "Total Due: " + TPBL.toFixed(2);
+            })
+            .catch(error => console.error("Error fetching or processing data:", error));
+            }
+
+
         //Fetching user information
-        fetch('https://script.google.com/macros/s/AKfycby3kSQ_tKv6stczdHltUHM-xDyD4SBaogAJ2DrZ7om7KJ7oRjTWc86bV3VTWyK5bIafeg/exec?getUsers')
+        fetch('https://script.google.com/macros/s/AKfycbzMjOW3h4Zb8sl4I7AR3gb-jijF2qWqQYe0AdO74Uo_3Q5UOb4GdNiJ7nq-2EjQ46aV4Q/exec?getUsers')
             .then(response => {
                 // Check if the response status is OK (200)
                 if (!response.ok) {
@@ -143,13 +173,18 @@
                     return;
                 }
                 });
+
+                
+
+                
             })
             .catch(error => console.error("Error fetching or processing data:", error));
  
-            
+
     </script>
 
 
 
 </body>
 </html>
+<!-- https://script.google.com/macros/s/AKfycbzMjOW3h4Zb8sl4I7AR3gb-jijF2qWqQYe0AdO74Uo_3Q5UOb4GdNiJ7nq-2EjQ46aV4Q/exec -->
